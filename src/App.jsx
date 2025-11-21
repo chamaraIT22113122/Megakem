@@ -172,21 +172,38 @@ export default function LoyaltyAppMUI() {
 
             html5QrcodeScanner = new window.Html5QrcodeScanner(
               "reader",
-              { fps: 10, qrbox: { width: 250, height: 250 } },
+              { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                rememberLastUsedCamera: true,
+                showTorchButtonIfSupported: true,
+              },
               false
             );
 
-            html5QrcodeScanner.render((decodedText) => {
-               handleScan(decodedText);
-               html5QrcodeScanner.clear().catch(err => console.error("Failed to clear scanner", err));
-            }, (errorMessage) => {
-               // Parse error, ignore usually
-            });
+            html5QrcodeScanner.render(
+              (decodedText) => {
+                // Success callback
+                handleScan(decodedText);
+                html5QrcodeScanner.clear().catch(err => console.error("Failed to clear scanner", err));
+              }, 
+              (errorMessage) => {
+                // Error callback - most are just "no QR code found" so we ignore
+                if (errorMessage.includes("NotAllowedError")) {
+                  showNotification("Camera permission denied", "error");
+                } else if (errorMessage.includes("NotFoundError")) {
+                  showNotification("No camera found", "error");
+                }
+              }
+            );
             
             scannerRef.current = html5QrcodeScanner;
           }
         })
-        .catch(err => console.error("Failed to load QR library", err));
+        .catch(err => {
+          console.error("Failed to load QR library", err);
+          showNotification("Failed to load camera", "error");
+        });
     }
 
     return () => {
