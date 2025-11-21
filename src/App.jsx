@@ -378,7 +378,7 @@ export default function LoyaltyAppMUI() {
             </Box>
           )}
 
-          {/* --- SCANNER VIEW (Real + Simulator) --- */}
+          {/* --- SCANNER VIEW (Real Camera) --- */}
           {view === 'scanner' && (
             <Paper sx={{ flexGrow: 1, bgcolor: '#000', color: 'white', overflow: 'hidden', position: 'relative', borderRadius: 2, display: 'flex', flexDirection: 'column' }}>
               
@@ -399,41 +399,16 @@ export default function LoyaltyAppMUI() {
                     View Cart ({cart.length})
                   </Fab>
                 )}
-              </Box>
 
-              {/* Simulator Panel (Bottom Sheet) */}
-              <Paper sx={{ 
-                borderTopLeftRadius: 24, borderTopRightRadius: 24, p: 2,
-                bgcolor: 'background.paper', color: 'text.primary',
-                maxHeight: '40vh', overflowY: 'auto'
-              }}>
-                <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
-                  <CameraAlt fontSize="small" /> 
-                  Or tap below to simulate scan:
-                </Typography>
-                
-                <List dense disablePadding>
-                  {MOCK_QR_CODES.map((qr, i) => {
-                    const d = JSON.parse(qr);
-                    return (
-                      <ListItem 
-                        key={i} 
-                        disablePadding
-                        sx={{ border: '1px solid #e0e0e0', borderRadius: 2, mb: 1, overflow: 'hidden' }}
-                      >
-                        <ListItemButton onClick={() => handleScan(qr)}>
-                           <ListItemText primary={d.name} secondary={`Batch: ${d.batch}`} primaryTypographyProps={{variant: 'body2', fontWeight: 600}} />
-                           <Chip label="ADD" size="small" color="primary" variant="outlined" />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-                
-                <Button fullWidth size="small" onClick={() => cart.length > 0 ? setView('cart') : setView('welcome')} sx={{ mt: 1, color: 'text.secondary' }}>
-                  Cancel
+                {/* Cancel Button */}
+                <Button 
+                  variant="contained"
+                  onClick={() => cart.length > 0 ? setView('cart') : setView('welcome')} 
+                  sx={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}
+                >
+                  {cart.length > 0 ? 'View Cart' : 'Cancel'}
                 </Button>
-              </Paper>
+              </Box>
             </Paper>
           )}
 
